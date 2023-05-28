@@ -33,12 +33,25 @@ async function run() {
     const cartCollection = client.db('bistroBossDB').collection('cart')
 
     app.get('/menu', async (req, res) => {
-        const result = await menuCollection.find().toArray()
-        res.send(result)
+      const result = await menuCollection.find().toArray()
+      res.send(result)
     })
 
     app.get('/reviews', async (req, res) => {
       const result = await reviewsCollection.find().toArray()
+      res.send(result)
+    })
+
+    // cart collection
+
+    app.get('/cart', async (req, res) => {
+      const email = req.query.email
+      if (!email) {
+        res.send([])
+      }
+
+      const query = { email: email }
+      const result = await cartCollection.find(query).toArray()
       res.send(result)
     })
 
@@ -63,9 +76,9 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Bistro boss server is running now')
+  res.send('Bistro boss server is running now')
 })
 
 app.listen(port, () => {
-    console.log(`server is running on port ${port}`)
+  console.log(`server is running on port ${port}`)
 })
