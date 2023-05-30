@@ -77,7 +77,7 @@ async function run() {
       const email = req.params.email
 
       if (req.decoded.email !== email) {
-        res.status(401).send({ error: true, message: 'unauthorized access' })
+        res.send({ admin: false })
       }
 
       const query = { email: email }
