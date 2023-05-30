@@ -34,6 +34,16 @@ async function run() {
     const reviewsCollection = client.db('bistroBossDB').collection('reviews')
     const cartCollection = client.db('bistroBossDB').collection('cart')
 
+
+    // jwt related apis
+
+    app.post('/jwt', (req, res) => {
+      const user = req.body
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+
+      res.send({ token })
+    })
+
     // users related apis
 
     app.get('/users', async (req, res) => {
