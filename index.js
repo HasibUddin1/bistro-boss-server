@@ -91,7 +91,7 @@ async function run() {
     // check admin
     app.get('/users/admin/:email', verifyJWT, async (req, res) => {
       const email = req.params.email
-      console.log('email:', email, 'decodedEmail:', req.decoded.email)
+      // console.log('email:', email, 'decodedEmail:', req.decoded.email)
 
       if (req.decoded.email !== email) {
         res.send({ admin: false })
