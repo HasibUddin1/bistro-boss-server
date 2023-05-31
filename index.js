@@ -48,8 +48,8 @@ async function run() {
     await client.connect();
 
 
-    const menuCollection = client.db('bistroBossDB').collection('menu')
     const usersCollection = client.db('bistroBossDB').collection('users')
+    const menuCollection = client.db('bistroBossDB').collection('menu')
     const reviewsCollection = client.db('bistroBossDB').collection('reviews')
     const cartCollection = client.db('bistroBossDB').collection('cart')
 
@@ -66,10 +66,10 @@ async function run() {
     // warning: use verifyJWT before using verifyAdmin
     const verifyAdmin = async (req, res, next) => {
       const email = req.decoded.email;
-      const query = {email: email}
+      const query = { email: email }
       const user = await usersCollection.findOne(query)
-      if(user?.role !== 'admin'){
-        return res.status(403).send({error: true, message: 'forbidden access'})
+      if (user?.role !== 'admin') {
+        return res.status(403).send({ error: true, message: 'forbidden access' })
       }
       next();
     }
