@@ -54,6 +54,7 @@ async function run() {
     const menuCollection = client.db('bistroBossDB').collection('menu')
     const reviewsCollection = client.db('bistroBossDB').collection('reviews')
     const cartCollection = client.db('bistroBossDB').collection('cart')
+    const paymentCollection = client.db('bistroBossDB').collection('payments')
 
 
     // jwt related apis
@@ -204,6 +205,14 @@ async function run() {
         clientSecret: paymentIntent.client_secret
       })
     })
+
+    // payment related apis
+    app.post('/payments', async (req, res) => {
+      const payment = req.body;
+      const result = await paymentCollection.insertOne(payment)
+      res.send(result)
+    })
+
 
 
     // Send a ping to confirm a successful connection
