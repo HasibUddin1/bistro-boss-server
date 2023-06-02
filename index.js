@@ -1,30 +1,31 @@
 const express = require('express');
 const cors = require('cors')
 const jwt = require('jsonwebtoken');
+require('dotenv').config()
 const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
-require('dotenv').config()
 const port = process.env.PORT || 5000
 
 // middleware
 app.use(cors())
 app.use(express.json())
+// console.log(process.env.PAYMENT_SECRET_KEY)
+
 
 const verifyJWT = (req, res, next) => {
-  const authorization = req.headers.authorization
+  const authorization = req.headers.authorization;
   if (!authorization) {
-    return res.status(401).send({ error: true, message: 'unauthorized access' })
+    return res.status(401).send({ error: true, message: 'unauthorized access' });
   }
-
-  const token = authorization.split(' ')[1]
+  // bearer token
+  const token = authorization.split(' ')[1];
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).send({ error: true, message: 'unauthorized access' })
     }
-
-    req.decoded = decoded
+    req.decoded = decoded;
     next();
   })
 }
@@ -74,6 +75,7 @@ async function run() {
       }
       next();
     }
+
 
     /**
      * 1. do not show the secured links to those who should not see
@@ -187,21 +189,21 @@ async function run() {
     })
 
     // create a new payment intent
-    app.post('/create-payment-intent',verifyJWT, async (req, res) => {
-      const {price} = req.body;
-      const amount = price*100
-
+    app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+      const { price } = req.body;
+      const amount = price * 100;
+      // const amountInt = parseInt(amount)
+      // console.log(amountInt)
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
+        amount: parseInt(amount),
         currency: 'usd',
         payment_method_types: ['card']
-      })
+      });
 
       res.send({
         clientSecret: paymentIntent.client_secret
       })
     })
-
 
 
     // Send a ping to confirm a successful connection
