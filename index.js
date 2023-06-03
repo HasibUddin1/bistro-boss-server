@@ -217,7 +217,7 @@ async function run() {
       res.send({ insertResult, deleteResult })
     })
 
-    app.get('/admin-stats', async (req, res) => {
+    app.get('/admin-stats', verifyJWT, verifyAdmin, async (req, res) => {
       const users = await usersCollection.estimatedDocumentCount()
       const products = await menuCollection.estimatedDocumentCount()
       const orders = await paymentCollection.estimatedDocumentCount()
