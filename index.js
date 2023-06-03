@@ -256,8 +256,16 @@ async function run() {
             totalPrice: { $sum: '$menuItemsData.price' },
             totalQuantity: { $sum: 1 }
           }
+        },
+        {
+          $project: {
+            category: '$_id',
+            totalPrice: { $round: ['$totalPrice', 2] },
+            totalQuantity: 1,
+            _id: 0
+          }
         }
-      ]
+      ];
 
       const result = await paymentCollection.aggregate(pipeline).toArray()
       res.send(result)
