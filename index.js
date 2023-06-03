@@ -233,7 +233,7 @@ async function run() {
       })
     })
 
-    app.get('/order-stats', async (req, res) => {
+    app.get('/order-stats',verifyJWT, verifyAdmin, async (req, res) => {
       const pipeline = [
         {
           $match: {
