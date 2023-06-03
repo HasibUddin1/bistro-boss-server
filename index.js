@@ -233,6 +233,36 @@ async function run() {
       })
     })
 
+    app.get('/order-stats', async (req, res) => {
+      const pipeline = [
+        {
+          $match: {
+            menuItems: { $exists: true, $not: { $size: 0 } }
+          }
+        },
+        { $unwind: '$menuItems' },
+        {
+          $lookup: {
+            from: 'menu',
+            localField: 'menuItems',
+            foreignField: '_id',
+            as: 'menuItemsData'
+          }
+        },
+        { $unwind: '$menuItemsData' },
+        {
+          $group: {
+            _id: '$menuItemsData.category',
+            totalPrice: { $sum: '$menuItemsData.price' },
+            totalQuantity: { $sum: 1 }
+          }
+        }
+      ]
+
+      const result = await paymentCollection.aggregate(pipeline).toArray()
+      res.send(result)
+    })
+
 
 
     // Send a ping to confirm a successful connection
